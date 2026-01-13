@@ -73,10 +73,12 @@ function calculate(historyInput){
     if (lastPair === "BB" || lastPair === "PP") suggestion = "莊";
 
     let unit = UNIT;
-    const strategyEl = document.getElementById("strategy");
-    if(strategyEl && strategyEl.value === "aggressive") {
-      unit = UNIT * Math.ceil(confidence / 50);
-    }
+const strategyEl = document.getElementById("strategy");
+const strategy = strategyEl ? strategyEl.value : "aggressive";
+
+if(strategy === "aggressive") {
+  unit = UNIT * Math.ceil(confidence / 50);
+}
 
     const sugEl = document.getElementById("suggestion");
     const unitEl = document.getElementById("unit");
