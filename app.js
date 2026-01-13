@@ -95,7 +95,7 @@ if(strategy === "aggressive") {
 
     lastBet = suggestion === "莊" ? "B" : "P";
     lastUnit = unit;
-    
+
   } catch(e) {
     console.error("calculate error:", e);
   }
@@ -133,14 +133,20 @@ function inputResult(r){
 
 function undo(){
   history.pop();
+  lastBet = null;
+  lastUnit = 0;
   render();
 }
+
 
 function resetAll(){
   history = [];
   balance = 0;
+  lastBet = null;
+  lastUnit = 0;
   render();
 }
+
 
 function render(){
   document.getElementById("round").innerText = history.length;
