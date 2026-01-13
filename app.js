@@ -49,51 +49,38 @@ async function verifyWithServer(key) {
 // 進階百家樂 AI 計算
 // =====================
 
-function calculate() {
-  const historyInput = document.getElementById("history").value.trim().toUpperCase();
+function calculate(historyInput){
   const strategy = document.getElementById("strategy").value;
+  const data = historyInput || "";
 
-  if (!historyInput.match(/^[BP]*$/)) {
-    alert("歷史路線只能輸入 B/P，例如 BPPB");
-    return;
-  }
+  if (!data.match(/^[BP]*$/)) return;
 
-  // 1️⃣ 全局統計
   const counts = { B: 0, P: 0, BB:0, PP:0, BP:0, PB:0 };
-  for (let i = 0; i < historyInput.length; i++) {
-    if (historyInput[i] === 'B') counts.B++;
-    else if (historyInput[i] === 'P') counts.P++;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i] === 'B') counts.B++;
+    else if (data[i] === 'P') counts.P++;
     if (i>0){
-      const pair = historyInput[i-1] + historyInput[i];
+      const pair = data[i-1] + data[i];
       if(counts[pair]!==undefined) counts[pair]++;
     }
   }
 
-  // 2️⃣ 信心值計算（進階版）
   let confidence = 50;
   if (counts.B > counts.P) confidence += Math.min((counts.B - counts.P)*5, 50);
   else confidence += Math.min((counts.P - counts.B)*5, 50);
 
-  // 3️⃣ 決策邏輯
   let suggestion = "閒";
-  const lastPair = historyInput.slice(-2);
+  const lastPair = data.slice(-2);
   if (lastPair === "BB" || lastPair === "PP") suggestion = "莊";
 
-  // 4️⃣ 下注單位建議
   let unit = UNIT;
   if(strategy === "aggressive") {
     unit = UNIT * Math.ceil(confidence / 50);
   }
 
-  // 5️⃣ 顯示結果
   document.getElementById("suggestion").innerText =
     `建議下注：${suggestion} (信心值: ${confidence}%)`;
   document.getElementById("unit").innerText = `建議下注單位：${unit}`;
-
-  // 6️⃣ 單靴損益模擬
-  balance -= unit; 
-  document.getElementById("balance").innerText = `單靴累計：${balance}`;
-  if(balance <= STOP_LOSS) alert(`已達單靴停損（${STOP_LOSS}）請停止下注`);
 }
 
 function resetBalance() {
@@ -146,7 +133,7 @@ function render(){
 }
 
 function calculateFromHistory(){
-  const str = history.filter(x=>x!=="T").join("");
-  document.getElementById("history").value = str; // 若你仍保留舊邏輯
-  calculate();
+  const str = history.filter(x => x !== "T").join("");
+  calculate(str);
 }
+
