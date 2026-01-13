@@ -1,4 +1,11 @@
+// =====================
 // 前端金鑰驗證 + 工具初始化
+// =====================
+
+let balance = 0; // 單靴累計
+const UNIT = 100; // 1u = 100
+const STOP_LOSS = -UNIT * 10; // 單靴-10u
+
 async function checkKey() {
   const saved = localStorage.getItem("roadmind_key");
   if (saved) {
@@ -37,7 +44,62 @@ async function verifyWithServer(key) {
   }
 }
 
-// 初始化工具
-if (checkKey()) {
-  render(); // 你的工具原本 render() 函式
+// =====================
+// 進階百家樂 AI 計算
+// =====================
+
+function calculate() {
+  const historyInput = document.getElementById("history").value.trim().toUpperCase();
+  const strategy = document.getElementById("strategy").value;
+
+  if (!historyInput.match(/^[BP]*$/)) {
+    alert("歷史路線只能輸入 B/P，例如 BPPB");
+    return;
+  }
+
+  // 1️⃣ 全局統計
+  const counts = { B: 0, P: 0, BB:0, PP:0, BP:0, PB:0 };
+  for (let i = 0; i < historyInput.length; i++) {
+    if (historyInput[i] === 'B') counts.B++;
+    else if (historyInput[i] === 'P') counts.P++;
+    if (i>0){
+      const pair = historyInput[i-1] + historyInput[i];
+      if(counts[pair]!==undefined) counts[pair]++;
+    }
+  }
+
+  // 2️⃣ 信心值計算（進階版）
+  let confidence = 50;
+  if (counts.B > counts.P) confidence += Math.min((counts.B - counts.P)*5, 50);
+  else confidence += Math.min((counts.P - counts.B)*5, 50);
+
+  // 3️⃣ 決策邏輯
+  let suggestion = "閒";
+  const lastPair = historyInput.slice(-2);
+  if (lastPair === "BB" || lastPair === "PP") suggestion = "莊";
+
+  // 4️⃣ 下注單位建議
+  let unit = UNIT;
+  if(strategy === "aggressive") {
+    unit = UNIT * Math.ceil(confidence / 50);
+  }
+
+  // 5️⃣ 顯示結果
+  document.getElementById("suggestion").innerText =
+    `建議下注：${suggestion} (信心值: ${confidence}%)`;
+  document.getElementById("unit").innerText = `建議下注單位：${unit}`;
+
+  // 6️⃣ 單靴損益模擬
+  balance -= unit; 
+  document.getElementById("balance").innerText = `單靴累計：${balance}`;
+  if(balance <= STOP_LOSS) alert(`已達單靴停損（${STOP_LOSS}）請停止下注`);
 }
+
+function resetBalance() {
+  balance = 0;
+  document.getElementById("balance").innerText = `單靴累計：${balance}`;
+  alert("單靴累計已重置");
+}
+
+// 初始化
+if(checkKey()) console.log("金鑰驗證成功，進階工具初始化完成");

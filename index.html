@@ -2,26 +2,54 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>RoadMind AI 百家樂工具</title>
+<title>RoadMind AI 百家樂工具（進階版）</title>
 <link rel="stylesheet" href="style.css">
+<style>
+body { font-family: sans-serif; background:#0b0f14; color:#eee; }
+.app { max-width: 900px; margin:auto; padding:20px; }
+.panel { background:#151b22; padding:20px; border-radius:12px; }
+button { padding:8px 14px; margin:4px; cursor:pointer; }
+input, select { padding:6px; margin:4px 0; }
+h1 { margin-bottom:12px; }
+#suggestion { font-size: 20px; font-weight:bold; margin-top:12px; }
+#unit, #balance { margin-top:6px; color:#9ca3af; }
+</style>
 </head>
 <body>
 <div class="app">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div>
       <div style="font-size:20px;font-weight:bold;">RoadMind｜百家樂 AI 決策系統</div>
-      <div style="font-size:12px;color:#9ca3af;">用紀律取代情緒，用數據輔助每一把</div>
+      <div style="font-size:12px;color:#9ca3af;">進階版 AI 決策與風控工具</div>
     </div>
     <a href="landing.html" style="color:#7dd3fc;font-size:14px;text-decoration:none;">← 返回首頁</a>
   </div>
 
-  <h1 style="display:none;">百家樂 AI 決策工具</h1>
+  <h1>百家樂 AI 工具面板（進階版）</h1>
 
-  <!-- 你的工具 UI panel -->
   <div class="panel">
-    <!-- 你的工具內容保持不變 -->
+    <div>
+      <label>歷史路線 (輸入 B/P 例如 BPPB)：</label>
+      <input type="text" id="history" placeholder="例: BPPB" style="width:250px;">
+    </div>
+    <div>
+      <label>下注策略：</label>
+      <select id="strategy">
+        <option value="conservative">保守型</option>
+        <option value="aggressive">進取型</option>
+      </select>
+    </div>
+    <div>
+      <button onclick="calculate()">計算建議</button>
+      <button onclick="resetBalance()">重置單靴累計</button>
+    </div>
+
+    <div id="suggestion"></div>
+    <div id="unit"></div>
+    <div id="balance"></div>
   </div>
 </div>
+
 <script src="app.js"></script>
 </body>
 </html>
