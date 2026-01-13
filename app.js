@@ -50,37 +50,47 @@ async function verifyWithServer(key) {
 // =====================
 
 function calculate(historyInput){
-  const strategy = document.getElementById("strategy").value;
-  const data = historyInput || "";
+  try {
+    const data = historyInput || "";
+    if (!data.match(/^[BP]*$/)) return;
 
-  if (!data.match(/^[BP]*$/)) return;
-
-  const counts = { B: 0, P: 0, BB:0, PP:0, BP:0, PB:0 };
-  for (let i = 0; i < data.length; i++) {
-    if (data[i] === 'B') counts.B++;
-    else if (data[i] === 'P') counts.P++;
-    if (i>0){
-      const pair = data[i-1] + data[i];
-      if(counts[pair]!==undefined) counts[pair]++;
+    const counts = { B: 0, P: 0, BB:0, PP:0, BP:0, PB:0 };
+    for (let i = 0; i < data.length; i++) {
+      if (data[i] === 'B') counts.B++;
+      else if (data[i] === 'P') counts.P++;
+      if (i>0){
+        const pair = data[i-1] + data[i];
+        if(counts[pair]!==undefined) counts[pair]++;
+      }
     }
+
+    let confidence = 50;
+    if (counts.B > counts.P) confidence += Math.min((counts.B - counts.P)*5, 50);
+    else confidence += Math.min((counts.P - counts.B)*5, 50);
+
+    let suggestion = "閒";
+    const lastPair = data.slice(-2);
+    if (lastPair === "BB" || lastPair === "PP") suggestion = "莊";
+
+    let unit = UNIT;
+    const strategyEl = document.getElementById("strategy");
+    if(strategyEl && strategyEl.value === "aggressive") {
+      unit = UNIT * Math.ceil(confidence / 50);
+    }
+
+    const sugEl = document.getElementById("suggestion");
+    const unitEl = document.getElementById("unit");
+
+    if(sugEl) {
+      sugEl.innerText = `建議下注：${suggestion} (信心值: ${confidence}%)`;
+    }
+    if(unitEl) {
+      unitEl.innerText = `建議下注單位：${unit}`;
+    }
+
+  } catch(e) {
+    console.error("calculate error:", e);
   }
-
-  let confidence = 50;
-  if (counts.B > counts.P) confidence += Math.min((counts.B - counts.P)*5, 50);
-  else confidence += Math.min((counts.P - counts.B)*5, 50);
-
-  let suggestion = "閒";
-  const lastPair = data.slice(-2);
-  if (lastPair === "BB" || lastPair === "PP") suggestion = "莊";
-
-  let unit = UNIT;
-  if(strategy === "aggressive") {
-    unit = UNIT * Math.ceil(confidence / 50);
-  }
-
-  document.getElementById("suggestion").innerText =
-    `建議下注：${suggestion} (信心值: ${confidence}%)`;
-  document.getElementById("unit").innerText = `建議下注單位：${unit}`;
 }
 
 function resetBalance() {
