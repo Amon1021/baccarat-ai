@@ -92,13 +92,13 @@ if(strategy === "aggressive") {
     if(unitEl) {
       unitEl.innerText = `建議下注單位：${unit}`;
     }
-
-    lastBet = suggestion === "莊" ? "B" : "P";
-    lastUnit = unit;
-
+    
   } catch(e) {
     console.error("calculate error:", e);
   }
+
+  lastBet = suggestion === "莊" ? "B" : "P";
+  lastUnit = unit;
 }
 
 function resetBalance() {
@@ -118,18 +118,23 @@ checkKey().then(ok => {
 let history = [];
 
 function inputResult(r){
-  // 先結算上一把
+
+  // 結算上一把
   if(lastBet){
     if(r === lastBet){
-      balance += lastUnit;   // 贏
+      balance += lastUnit;
     } else if(r === "B" || r === "P") {
-      balance -= lastUnit;   // 輸（和不算）
+      balance -= lastUnit;
     }
   }
 
   history.push(r);
+
+  updateBalanceUI();   // ← 強制更新畫面
+
   render();
 }
+
 
 function undo(){
   history.pop();
@@ -138,15 +143,15 @@ function undo(){
   render();
 }
 
-
 function resetAll(){
   history = [];
   balance = 0;
   lastBet = null;
   lastUnit = 0;
+
+  updateBalanceUI();
   render();
 }
-
 
 function render(){
   document.getElementById("round").innerText = history.length;
@@ -170,3 +175,9 @@ function calculateFromHistory(){
   calculate(str);
 }
 
+function updateBalanceUI(){
+  const el = document.getElementById("balance");
+  if(el){
+    el.innerText = `總累積：${balance} 單位`;
+  }
+}
