@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="style.css">
 <style>
 body { font-family: sans-serif; background:#0b0f14; color:#eee; }
-.app { max-width: 900px; margin:auto; padding:20px; }
+.app { max-width: 900px; margin:auto; padding:20px; display:none; } /* 一開始先隱藏 */
 .panel { background:#151b22; padding:20px; border-radius:12px; }
 button { padding:8px 14px; margin:4px; cursor:pointer; }
 input, select { padding:6px; margin:4px 0; }
@@ -16,7 +16,7 @@ h1 { margin-bottom:12px; }
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div>
       <div style="font-size:20px;font-weight:bold;">RoadMind｜百家樂 AI 決策系統</div>

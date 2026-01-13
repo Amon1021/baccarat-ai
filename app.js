@@ -5,6 +5,7 @@
 let balance = 0; // 單靴累計
 const UNIT = 100; // 1u = 100
 const STOP_LOSS = -UNIT * 10; // 單靴-10u
+const appDiv = document.getElementById("app");
 
 async function checkKey() {
   const saved = localStorage.getItem("roadmind_key");
@@ -102,4 +103,9 @@ function resetBalance() {
 }
 
 // 初始化
-if(checkKey()) console.log("金鑰驗證成功，進階工具初始化完成");
+checkKey().then(ok => {
+  if(ok){
+    console.log("金鑰驗證成功，進階工具初始化完成");
+    appDiv.style.display = "block"; // 驗證成功才顯示面板
+  }
+});
