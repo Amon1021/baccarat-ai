@@ -28,20 +28,29 @@ h1 { margin-bottom:12px; }
   <h1>百家樂 AI 工具面板（進階版）</h1>
 
   <div class="panel">
-    <div>
-      <label>歷史路線 (輸入 B/P 例如 BPPB)：</label>
-      <input type="text" id="history" placeholder="例: BPPB" style="width:250px;">
-    </div>
-    <div>
-      <label>下注策略：</label>
-      <select id="strategy">
-        <option value="conservative">保守型</option>
-        <option value="aggressive">進取型</option>
-      </select>
-    </div>
-    <div>
-  <button type="button" onclick="calculate()">計算建議</button>
-  <button type="button" onclick="resetBalance()">重置單靴累計</button>
+  <div style="text-align:center;margin-bottom:10px;">
+    <div style="font-size:18px;">第 <span id="round">0</span> 局</div>
+    <div id="balance" style="color:#f87171;margin-top:4px;">總累積：0 單位</div>
+  </div>
+
+  <div id="road" style="min-height:120px;margin:12px 0;padding:8px;background:#0f141a;border-radius:8px;"></div>
+
+  <div style="text-align:center;margin-top:12px;">
+    <div style="color:#9ca3af;margin-bottom:6px;">下注建議</div>
+    <div id="suggestion" style="font-size:28px;font-weight:bold;"></div>
+    <div id="unit" style="margin-top:4px;"></div>
+  </div>
+
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+    <button class="btn-b" onclick="inputResult('B')">莊 (B)</button>
+    <button class="btn-p" onclick="inputResult('P')">閒 (P)</button>
+    <button class="btn-t" onclick="inputResult('T')">和 (T)</button>
+  </div>
+
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:12px;">
+    <button type="button" onclick="resetAll()">全域重置</button>
+    <button type="button" onclick="undo()">記錄回退</button>
+  </div>
 </div>
 
     <div id="suggestion"></div>

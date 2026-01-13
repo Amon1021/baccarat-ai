@@ -109,3 +109,44 @@ checkKey().then(ok => {
     appDiv.style.display = "block"; // 驗證成功才顯示面板
   }
 });
+
+let history = [];
+
+function inputResult(r){
+  history.push(r);
+  render();
+}
+
+function undo(){
+  history.pop();
+  render();
+}
+
+function resetAll(){
+  history = [];
+  balance = 0;
+  render();
+}
+
+function render(){
+  document.getElementById("round").innerText = history.length;
+  document.getElementById("balance").innerText = `總累積：${balance} 單位`;
+
+  // 簡易路圖顯示
+  const road = history.map(x=>{
+    if(x==="B") return "🔴";
+    if(x==="P") return "🔵";
+    return "🟢";
+  }).join(" ");
+  document.getElementById("road").innerText = road;
+
+  if(history.length>0){
+    calculateFromHistory();
+  }
+}
+
+function calculateFromHistory(){
+  const str = history.filter(x=>x!=="T").join("");
+  document.getElementById("history").value = str; // 若你仍保留舊邏輯
+  calculate();
+}
