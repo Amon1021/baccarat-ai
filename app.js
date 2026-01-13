@@ -122,19 +122,22 @@ function inputResult(r){
   // 結算上一把
   if(lastBet){
     if(r === lastBet){
-      balance += lastUnit;
+      balance += lastUnit;   // 贏
     } else if(r === "B" || r === "P") {
-      balance -= lastUnit;
+      balance -= lastUnit;   // 輸（和不算）
     }
   }
 
   history.push(r);
 
-  updateBalanceUI();   // ← 強制更新畫面
+  // 立刻更新畫面（不要等 render 覆蓋）
+  const balEl = document.getElementById("balance");
+  if(balEl){
+    balEl.innerText = `總累積：${balance} 單位`;
+  }
 
   render();
 }
-
 
 function undo(){
   history.pop();
@@ -149,7 +152,11 @@ function resetAll(){
   lastBet = null;
   lastUnit = 0;
 
-  updateBalanceUI();
+  const balEl = document.getElementById("balance");
+  if(balEl){
+    balEl.innerText = `總累積：0 單位`;
+  }
+
   render();
 }
 
