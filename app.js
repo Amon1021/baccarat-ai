@@ -119,18 +119,23 @@ let history = [];
 
 function inputResult(r){
 
+  // 把中文轉成內部代碼
+  let code = r;
+  if (r === "莊") code = "B";
+  if (r === "閒") code = "P";
+  if (r === "和") code = "T";
+
   // 結算上一把
   if(lastBet){
-    if(r === lastBet){
+    if(code === lastBet){
       balance += lastUnit;   // 贏
-    } else if(r === "B" || r === "P") {
+    } else if(code === "B" || code === "P") {
       balance -= lastUnit;   // 輸（和不算）
     }
   }
 
-  history.push(r);
+  history.push(code);
 
-  // 立刻更新畫面（不要等 render 覆蓋）
   const balEl = document.getElementById("balance");
   if(balEl){
     balEl.innerText = `總累積：${balance} 單位`;
