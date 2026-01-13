@@ -1,3 +1,6 @@
+let lastBet = null;   // "B" 或 "P"
+let lastUnit = 0;    // 上一把下注單位
+
 // =====================
 // 前端金鑰驗證 + 工具初始化
 // =====================
@@ -90,6 +93,9 @@ if(strategy === "aggressive") {
       unitEl.innerText = `建議下注單位：${unit}`;
     }
 
+    lastBet = suggestion === "莊" ? "B" : "P";
+    lastUnit = unit;
+    
   } catch(e) {
     console.error("calculate error:", e);
   }
@@ -112,6 +118,15 @@ checkKey().then(ok => {
 let history = [];
 
 function inputResult(r){
+  // 先結算上一把
+  if(lastBet){
+    if(r === lastBet){
+      balance += lastUnit;   // 贏
+    } else if(r === "B" || r === "P") {
+      balance -= lastUnit;   // 輸（和不算）
+    }
+  }
+
   history.push(r);
   render();
 }
